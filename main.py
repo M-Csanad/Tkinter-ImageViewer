@@ -68,8 +68,8 @@ def openImg(self):
     imgS = img.resize((widthS, heightS))
     self.SmallImg = ImageTk.PhotoImage(imgS)
 
-    widthB = int(width/5)
-    heightB = int(height/5)
+    widthB = int(width/3)
+    heightB = int(height/3)
     imgB = img.resize((widthB, heightB))
     self.BigImg = ImageTk.PhotoImage(imgB)
 
@@ -81,9 +81,15 @@ def openImg(self):
     BImg.grid(row=0, column=0, columnspan=3, padx=10, pady=5)
 
 
+def entPrint(self):    
+    ent.delete(0, END)
+    ent.insert(0, path+filename)
+    ent.bind("<Return>", lambda: clickEnt(self), openImg(self))
+
+everyFile = []
 def openPath(self):
     global path, filename
-    #path = ent.get()
+    open = True
     Fullpath = filedialog.askopenfilename(title='open')
     pathSlice = Fullpath.split("/")
     a = []
@@ -94,13 +100,27 @@ def openPath(self):
         path += x + "/"    
 
     filename = pathSlice[-1]
+    everyFile.append(filename)
 
-    ent.delete(0, END)
-    ent.insert(0, path+filename)
-    ent.bind("<Return>", lambda: clickEnt(self), openImg(self))
+    root2 = Tk()
+    root2.title("Continue?")
+    root2.eval('tk::PlaceWindow . center')
+    Choose = Label(root2, text="Szeretnél még egy képet behúzni?") 
+    btnYes = Button(root2, text="Igen", command=lambda:[openPath(self), root2.destroy()])
+    btnNo = Button(root2, text="Nem", command=lambda:[entPrint(self), root2.destroy()])
+    
+
+    Choose.grid(row=0, column=0, columnspan=2)
+    btnYes.grid(row=1, column=0, padx=5, pady=10)
+    btnNo.grid(row=1, column=1, padx=5, pady=10)
+
+    Choose.config(font = TitleFont)
+    btnYes.config(font = SimpleFont)
+    btnNo.config(font = SimpleFont)   
 
     
 ent.bind('<Return>', openPath)
+
 
 leftFrame.grid(row=0, column=0, padx=10,  pady=5)
 rightFrame.grid(row=0, column=1, padx=10,  pady=5)
@@ -111,8 +131,6 @@ lbName.grid(row=6, column=0, columnspan=3, padx=10, pady=5)
 
 ent.grid(row=2, column=0, columnspan=3, padx=10, pady=5)
 drop.grid(row=5, column=2)
-
-
 
 btnBack.grid(row=4, column=0, padx=10, pady=5)
 btnNext.grid(row=4, column=2, padx=10, pady=5)
