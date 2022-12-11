@@ -89,7 +89,6 @@ def entPrint(self):
 everyFile = []
 def openPath(self):
     global path, filename
-    open = True
     Fullpath = filedialog.askopenfilename(title='open')
     pathSlice = Fullpath.split("/")
     a = []
