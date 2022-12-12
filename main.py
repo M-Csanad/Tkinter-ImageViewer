@@ -10,6 +10,8 @@ def clickEnt(args):
     ent.delete(0, 'end')
 
 
+
+
 x = 0
 def openImg(self):
     global x, filename, btnNext, btnBack, btnSizeON
@@ -18,10 +20,12 @@ def openImg(self):
         img = Image.open(path+everyFile[0])
         ent.delete(0, END)
         ent.insert(0, path+everyFile[0])
+        root.title("Image Viewer (%s)" % everyFile[x])
     else:
         img = Image.open(path+everyFile[x])
         ent.delete(0, END)
         ent.insert(0, path+everyFile[x])
+        root.title("Image Viewer (%s)" % everyFile[x])
 
     def Forward():
         global x, img
@@ -32,6 +36,7 @@ def openImg(self):
             img = Image.open(path+everyFile[x])
             ent.delete(0, END)
             ent.insert(0, path+everyFile[x])
+            root.title("Image Viewer (%s)" % everyFile[x])
             openImg(self)
             
         except:
@@ -48,6 +53,7 @@ def openImg(self):
             img = Image.open(path+everyFile[x])
             ent.delete(0, END)
             ent.insert(0, path+everyFile[x])
+            root.title("Image Viewer (%s)" % everyFile[x])
             openImg(self)
 
         except:
@@ -56,6 +62,10 @@ def openImg(self):
        
     
     width, height = img.size
+    if width >= height:
+        ent.grid_configure(ipadx=85)
+    else:
+        ent.grid_configure(ipadx=35)
     widthS = int(width/10)
     heightS = int(height/10)
     imgS = img.resize((widthS, heightS))
@@ -73,43 +83,58 @@ def openImg(self):
 
     menu = StringVar(leftFrame)
     menu.set("1.0x")
-    drop = OptionMenu(leftFrame, menu, "0.5x", "1.0x", "1.5x", "2.0x")
-    drop.config(font = SmallFont, bg="#252422", fg="#ccc5b9",
-                activebackground="#eb5e28", activeforeground="#ccc5b9")
-    drop["menu"].config(bg="#252422", fg="#ccc5b9",
-                        activebackground="#eb5e28", activeforeground="#ccc5b9")
+    drop = OptionMenu(leftFrame, menu, "0.2x", "0.5x", "1.0x", "1.5x", "2.0x", "2.5x", "3.0x")
+    drop.config(font = SmallFont, bg="#161521", fg="#ed6165",
+                activebackground="#2D2A49", activeforeground="#82b1c4", highlightthickness=0)
+    drop["menu"].config(bg="#161521", fg="#ed6165",
+                        activebackground="#2D2A49", activeforeground="#82b1c4" )
 
 
     def imgSize(self):
-            global width, height, img
-            type = menu.get()
-            img = Image.open(path+everyFile[x])
-            width, height = img.size
-            if type == "0.5x":
-                widthB = int(width/3 * 0.5)
-                heightB = int(height/3 * 0.5)
-                
-            elif type == "1.0x":
-                widthB = int(width/3)
-                heightB = int(height/3)
-                
-            elif type == "1.5x":
-                widthB = int(width/3 * 1.5)
-                heightB = int(height/3 * 1.5)
-                
-            elif type == "2.0x":
-                widthB = int(width/3 * 2)
-                heightB = int(height/3 * 2)
-                
+        
+        global width, height, img
+        type = menu.get()
+        img = Image.open(path+everyFile[x])
+        width, height = img.size
+        if type == "0.2x":
+            widthB = int(width/3 * 0.2)
+            heightB = int(height/3 * 0.2)
+        
+        elif type == "0.5x":
+            widthB = int(width/3 * 0.5)
+            heightB = int(height/3 * 0.5)
             
-            imgB = img.resize((widthB, heightB))
-            self.BigImg = ImageTk.PhotoImage(imgB)
-            SImg.config(image=self.SmallImg)
-            BImg.config(image=self.BigImg)
+        elif type == "1.0x":
+            widthB = int(width/3)
+            heightB = int(height/3)
+            
+        elif type == "1.5x":
+            widthB = int(width/3 * 1.5)
+            heightB = int(height/3 * 1.5)
+            
+        elif type == "2.0x":
+            widthB = int(width/3 * 2)
+            heightB = int(height/3 * 2)
+        
+        elif type == "2.5x":
+            widthB = int(width/3 * 2.5)
+            heightB = int(height/3 * 2.5)
+        
+        elif type == "3.0x":
+            widthB = int(width/3 * 3)
+            heightB = int(height/3 * 3)
+    
+        
+        imgB = img.resize((widthB, heightB))
+        self.BigImg = ImageTk.PhotoImage(imgB)
+        SImg.config(image=self.SmallImg)
+        BImg.config(image=self.BigImg)
 
-
+    def delEntContent(args):
+            entRename.delete(0, 'end')
     entRename = Entry(leftFrame, textvariable=myStrV02)
-    entRename.insert(0, 'Kép átnevezése és új mappába rakása')
+    entRename.insert(0, 'Kép átnevezése és új mappa')
+    entRename.bind('<Button-1>', delEntContent)
     
     def fileCreate():
      
@@ -136,15 +161,18 @@ def openImg(self):
     SImg.grid(row=3, column=0, columnspan=3, padx=10, pady=5)
     BImg.grid(row=0, column=0, columnspan=3, padx=10, pady=5)
     drop.grid(row=5, column=2)
-    entRename.grid(row=8, column=0, columnspan=2)
+    entRename.grid(row=8, column=0, columnspan=2, ipadx=30)
     btnRename.grid(row=8, column=2)
 
 
-    btnNext.config(text=">>", command=Forward)
-    btnBack.config(text="<<", command=Backward)
-    btnSizeON.config(text="Méretezés", command=lambda:[imgSize(self)])
-    lbName.config(text=everyFile[x])
-    entRename.config(font = SmallFont)
+    btnNext.config(text=">>", command=Forward, bg="#161521", fg="#ed6165", activebackground="#2D2A49", activeforeground="#82b1c4", border=0)
+    btnBack.config(text="<<", command=Backward, bg="#161521", fg="#ed6165", activebackground="#2D2A49", activeforeground="#82b1c4", border=0)
+    btnSizeON.config(text="Méretezés", command=lambda:[imgSize(self)], bg="#161521", fg="#ed6165", activebackground="#2D2A49", activeforeground="#82b1c4", border=0)
+    btnRename.config(font = SimpleFont, bg="#161521", fg="#ed6165", activebackground="#2D2A49", activeforeground="#82b1c4", border=0)
+
+    lbName.config(text=everyFile[x], bg="#161521", fg="#ed6165")
+    entRename.config(font = SmallFont, bg="#2D2A49", fg="#82b1c4")
+    
 
     
     
@@ -176,6 +204,9 @@ def openPath(self):
     root2 = Tk()
     root2.title("Continue?")
     root2.eval('tk::PlaceWindow . center')
+    root2.configure(bg="#161521")
+
+
     Choose = Label(root2, text="Szeretnél még egy képet behúzni?") 
     btnYes = Button(root2, text="Igen", command=lambda:[openPath(self), root2.destroy()])
     btnNo = Button(root2, text="Nem", command=lambda:[entPrint(self), root2.destroy()])
@@ -185,9 +216,9 @@ def openPath(self):
     btnYes.grid(row=1, column=0, padx=5, pady=10)
     btnNo.grid(row=1, column=1, padx=5, pady=10)
 
-    Choose.config(font = TitleFont)
-    btnYes.config(font = SimpleFont)
-    btnNo.config(font = SimpleFont) 
+    Choose.config(font=('Courier new', 20, 'bold'), bg="#161521", fg="#ed6165", activebackground="#2D2A49", activeforeground="#82b1c4" ,border=0)
+    btnYes.config(font=('Courier new', 12), bg="#161521", fg="#ed6165", activebackground="#2D2A49", activeforeground="#82b1c4" ,border=0)
+    btnNo.config(font=('Courier new', 12), bg="#161521", fg="#ed6165", activebackground="#2D2A49", activeforeground="#82b1c4" ,border=0) 
 
 
 
@@ -196,6 +227,7 @@ def openPath(self):
 root = Tk()
 root.title("Image Viewer")
 root.eval('tk::PlaceWindow . center')
+root.configure(bg="#161521")
 
 TitleFont = tkinter.font.Font(
     family='Courier new',
@@ -245,27 +277,30 @@ leftFrame.grid(row=0, column=0, padx=10,  pady=5)
 rightFrame.grid(row=0, column=1, padx=10,  pady=5)
 
 lbTitle.grid(row=0, column=0, columnspan=3, padx=10, pady=5)
-lbSize.grid(row=5, column=0)
+lbSize.grid(row=5, column=0, columnspan=2, sticky=E)
 lbName.grid(row=7, column=0, columnspan=3, padx=10, pady=5)
 
 ent.grid(row=2, column=0, columnspan=3, padx=10, pady=5)
-
 
 btnBack.grid(row=4, column=0, padx=10, pady=5)
 btnNext.grid(row=4, column=2, padx=10, pady=5)
 btnInfo.grid(row=1, column=0, columnspan=3, padx=10, pady=5)
 btnSizeON.grid(row = 6, column=2)
 
-lbTitle.config(font = TitleFont)
-lbSize.config(font = SimpleFont)
-lbName.config(font = SimpleFont) 
-
-ent.config(font = SmallFont)
+leftFrame.config(bg="#161521")
+rightFrame.config(bg="#161521")
 
 
-btnBack.config(font = SimpleFont)
-btnNext.config(font = SimpleFont)
-btnInfo.config(font = SimpleFont)
-btnSizeON.config(font = SimpleFont)
+lbTitle.config(font = TitleFont, bg="#161521", fg="#ed6165")
+lbSize.config(font = SimpleFont, bg="#161521", fg="#ed6165")
+lbName.config(font = SimpleFont, bg="#161521", fg="#ed6165") 
+
+ent.config(font = SmallFont, bg="#2D2A49", fg="#82b1c4")
+
+
+btnBack.config(font = SimpleFont, bg="#161521", fg="#ed6165",activebackground="#2D2A49", activeforeground="#82b1c4" ,border=0)
+btnNext.config(font = SimpleFont, bg="#161521", fg="#ed6165",activebackground="#2D2A49", activeforeground="#82b1c4" ,border=0)
+btnInfo.config(font = SimpleFont, bg="#161521", fg="#ed6165", activebackground="#2D2A49", activeforeground="#82b1c4" ,border=0)
+btnSizeON.config(font = SimpleFont, bg="#161521", fg="#ed6165", activebackground="#2D2A49", activeforeground="#82b1c4" ,border=0)
 
 root.mainloop()
