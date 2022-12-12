@@ -16,9 +16,12 @@ def openImg(self):
      
     if x == 0:
         img = Image.open(path+everyFile[0])
+        ent.delete(0, END)
+        ent.insert(0, path+everyFile[0])
     else:
         img = Image.open(path+everyFile[x])
-
+        ent.delete(0, END)
+        ent.insert(0, path+everyFile[x])
 
     def Forward():
         global x, img
@@ -27,6 +30,8 @@ def openImg(self):
             SImg.grid_forget()
             BImg.grid_forget()
             img = Image.open(path+everyFile[x])
+            ent.delete(0, END)
+            ent.insert(0, path+everyFile[x])
             openImg(self)
             
         except:
@@ -41,6 +46,8 @@ def openImg(self):
             SImg.grid_forget()
             BImg.grid_forget()
             img = Image.open(path+everyFile[x])
+            ent.delete(0, END)
+            ent.insert(0, path+everyFile[x])
             openImg(self)
 
         except:
@@ -114,11 +121,14 @@ def openImg(self):
             os.makedirs(newPath)
             messagebox.showinfo("Mappa kész!", "Mappát sikeresen létrehozta!")
         elif os.path.exists(newPath):
-            messagebox.showinfo("Hoppá!", "Ez a mappa már létezik")
             if os.path.isfile(newFileName):
-                messagebox.showinfo("Valami nem jó!", "Ilyen nevű file már létezik.")
-            os.rename(oldFileName, newFileName)
-            shutil.move(newFileName, newPath)
+                messagebox.showerror("Valami nem jó!", "Nem tudom áthúzni a fájlt a mappába...\nVizsgálja meg az alábbi lehetőségeket:\n\t1.: Létezik olyan file, ami egyezik az átírni kívánt file nevével a '%s.newFolder/' mappában\n\t2.: Létezik olyan file, ami egyezik az átírni kívánt file nevével a '%s' mappában" % (path,path))
+            try:
+                os.rename(oldFileName, newFileName)
+                shutil.move(newFileName, newPath)
+            except shutil.Error: 
+                messagebox.showerror("Valami nem jó!", "Ilyen nevű file már létezik.\nNem tudom áthúzni a mappába\nA file az eredeti mappában lett átnevezve")
+
 
 
     btnRename = Button(leftFrame, text="Átnevezés", command=fileCreate)
@@ -144,7 +154,6 @@ def openImg(self):
 
 def entPrint(self):    
     ent.delete(0, END)
-    ent.insert(0, path+filename)
     ent.bind("<Return>", lambda: clickEnt(self), openImg(self))
 
 
