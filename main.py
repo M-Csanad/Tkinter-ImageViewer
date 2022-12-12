@@ -1,5 +1,8 @@
 from tkinter import *
+from tkinter import messagebox
 from PIL import ImageTk, Image
+import os
+import shutil
 from tkinter import filedialog
 import tkinter.font
 
@@ -96,29 +99,53 @@ def openImg(self):
             self.BigImg = ImageTk.PhotoImage(imgB)
             SImg.config(image=self.SmallImg)
             BImg.config(image=self.BigImg)
-    
-    #img = Image.open(path+everyFile[x])
 
+
+    entRename = Entry(leftFrame, textvariable=myStrV02)
+    entRename.insert(0, 'Kép átnevezése és új mappába rakása')
+    
+    def fileCreate():
+     
+        oldFileName = path+everyFile[x]
+        newFileName = path+entRename.get()
+
+        newPath = path + "\." + "newFolder" 
+        if not os.path.exists(newPath):
+            os.makedirs(newPath)
+            messagebox.showinfo("Mappa kész!", "Mappát sikeresen létrehozta!")
+        elif os.path.exists(newPath):
+            messagebox.showinfo("Hoppá!", "Ez a mappa már létezik")
+            if os.path.isfile(newFileName):
+                messagebox.showinfo("Valami nem jó!", "Ilyen nevű file már létezik.")
+            os.rename(oldFileName, newFileName)
+            shutil.move(newFileName, newPath)
+
+
+    btnRename = Button(leftFrame, text="Átnevezés", command=fileCreate)
 
     SImg.grid(row=3, column=0, columnspan=3, padx=10, pady=5)
     BImg.grid(row=0, column=0, columnspan=3, padx=10, pady=5)
     drop.grid(row=5, column=2)
+    entRename.grid(row=8, column=0, columnspan=2)
+    btnRename.grid(row=8, column=2)
+
 
     btnNext.config(text=">>", command=Forward)
     btnBack.config(text="<<", command=Backward)
     btnSizeON.config(text="Méretezés", command=lambda:[imgSize(self)])
     lbName.config(text=everyFile[x])
+    entRename.config(font = SmallFont)
+
+    
     
 
-
+    
 
 
 def entPrint(self):    
     ent.delete(0, END)
     ent.insert(0, path+filename)
     ent.bind("<Return>", lambda: clickEnt(self), openImg(self))
-
-
 
 
 
@@ -184,9 +211,11 @@ rightFrame = Frame(root, bg='red')
 
 
 
-myStrV = StringVar()
-ent = Entry(leftFrame, textvariable=myStrV)
+myStrV01 = StringVar()
+myStrV02 = StringVar()
+ent = Entry(leftFrame, textvariable=myStrV01)
 ent.insert(0, 'Kérem nyomjon Entert')
+ent.bind('<Return>', openPath)
 
 btnInfo = Button(leftFrame, text="Infó")
 
@@ -201,9 +230,6 @@ lbName = Label(leftFrame, text="???")
 btnNext = Button(leftFrame, text="")
 btnBack = Button(leftFrame, text="")
 btnSizeON = Button(leftFrame, text="")
-
-    
-ent.bind('<Return>', openPath)
 
 
 leftFrame.grid(row=0, column=0, padx=10,  pady=5)
@@ -226,6 +252,7 @@ lbSize.config(font = SimpleFont)
 lbName.config(font = SimpleFont) 
 
 ent.config(font = SmallFont)
+
 
 btnBack.config(font = SimpleFont)
 btnNext.config(font = SimpleFont)
